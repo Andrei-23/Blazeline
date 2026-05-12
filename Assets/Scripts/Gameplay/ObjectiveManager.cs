@@ -55,6 +55,18 @@ public class ObjectiveManager  : MonoBehaviour
         SpawnInitialization();
     }
 
+    private void Update()
+    {
+        float maxDanger = 0f;
+        foreach(Portal portal in generatedPortals)
+        {
+            if(portal != null && portal.isEnabled && !portal.isClosed)
+            {
+                maxDanger = Math.Max(maxDanger, portal.GetDangerLevel());
+            }
+        }
+        PlayerBuffManager.Instance.SetCurrentDangerLevel(maxDanger);
+    }
     public void SpawnInitialization()
     {
         for (int i = 0; i < portalParent.childCount; i++)
@@ -108,6 +120,7 @@ public class ObjectiveManager  : MonoBehaviour
         if(isPortal){
             generatedPortals[id].gameObject.SetActive(true);
             pos = generatedPortals[id].transform.position;
+            generatedPortals[id].UpdateSpawnTime();
         }
         else{
             generatedObelisks[id].Activate();

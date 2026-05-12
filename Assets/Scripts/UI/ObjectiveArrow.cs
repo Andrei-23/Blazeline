@@ -17,4 +17,12 @@ public class ObjectiveArrow : MonoBehaviour
     {
         rotationPoint.rotation = Quaternion.Euler(0, 0, angle - 90f);
     }
+    
+    public void SetDangerColor(float danger)
+    {
+        Color c = Color.white * (1 - danger) + Color.red * danger;
+        if(danger == 1f)
+            c = Color.black;
+        image.color = c;
+    }
 }

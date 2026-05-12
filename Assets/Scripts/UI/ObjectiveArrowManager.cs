@@ -81,14 +81,20 @@ public class ObjectiveArrowManager : MonoBehaviour
             if (visible)
                 continue;
 
-            CreateIndicator(worldPos, alpha, isPortal);
+            float danger = 0f;
+            if(isPortal && target is Portal portal)
+            {
+                danger = portal.GetDangerLevel();
+            }
+            CreateIndicator(worldPos, alpha, isPortal, danger);
         }
     }
 
     private void CreateIndicator(
         Vector3 worldPos,
         float alpha,
-        bool isPortal
+        bool isPortal,
+        float danger
     )
     {
         var obj = Instantiate(
@@ -115,6 +121,10 @@ public class ObjectiveArrowManager : MonoBehaviour
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         arrow.SetRotation(angle);
         arrow.SetAlpha(alpha);
+        if (isPortal)
+        {
+            arrow.SetDangerColor(danger);
+        }
     }
 
     private void ClearIndicators()

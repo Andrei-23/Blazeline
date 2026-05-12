@@ -154,7 +154,7 @@ public class PlayerSteering : MonoBehaviour
         speedMult = Mathf.Lerp(minDecelerationMult, 1f, speedMult);
 
         float angleNorm = angleDeg / 180f;
-        return carveDeceleration * angleNorm * angleNorm * speedMult * deltaTime;
+        return carveDeceleration * angleNorm * angleNorm * speedMult * deltaTime * PlayerBuffManager.Instance.GetSpeedBoost();
     }
 
     /// <summary>

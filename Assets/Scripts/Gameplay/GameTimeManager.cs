@@ -53,13 +53,15 @@ public class GameTimeManager : MonoBehaviour
         Instance = this;
         defaultFixedDeltaTime = Time.fixedDeltaTime;
         menuWeakPauseTimerCurrent = Mathf.Max(0f, menuWeakPauseTimerDurationSeconds);
+        
+        gameTimeLeftSeconds = Mathf.Max(0f, gameDurationMinutes * 60f);
+        BroadcastGameMinuteIfChanged(forceBroadcast: true);
+        BroadcastTimerUpdates();
     }
 
     private void Start()
     {
-        gameTimeLeftSeconds = Mathf.Max(0f, gameDurationMinutes * 60f);
-        BroadcastGameMinuteIfChanged(forceBroadcast: true);
-        BroadcastTimerUpdates();
+        
     }
 
     private void OnDestroy()
@@ -191,5 +193,10 @@ public class GameTimeManager : MonoBehaviour
         {
             SetPauseMode(PauseMode.None);
         }
+    }
+
+    public float GetTimerSecondsLeft()
+    {
+        return gameTimeLeftSeconds;
     }
 }

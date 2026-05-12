@@ -8,12 +8,17 @@ using System.Linq;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("Movement Settings")]
-    [SerializeField] private float maxDefaultSpeed = 5f; // Maximum speed the player can reach
-    [SerializeField] private float maxAcceleration = 1f; // How fast the player accelerates in input direction
-    [SerializeField] private float brakeDeceleration = 10f; // Extra deceleration while brake action is held
+    [Header("Speed Settings")]
+    [SerializeField] private float initialMaxDefaultSpeed = 5f; // Maximum speed the player can reach
+    [SerializeField] private float initialMaxAcceleration = 1f; // How fast the player accelerates in input direction
+    [SerializeField] private float initialBrakeDeceleration = 10f; // Extra deceleration while brake action is held
     // friction acceleration is equal to maxAcceleration at maxSpeed
 
+    private PlayerBuffManager buffs => PlayerBuffManager.Instance;
+    private float maxDefaultSpeed => initialMaxDefaultSpeed * buffs.GetSpeedBoost();
+    private float maxAcceleration => initialMaxAcceleration * buffs.GetSpeedBoost();
+    private float brakeDeceleration => initialBrakeDeceleration * buffs.GetSpeedBoost();
+    
     [Header("Dash Settings")]
     [SerializeField] private float dashCooldown = 1f;
     [SerializeField] private float dashDuration = 0.2f;

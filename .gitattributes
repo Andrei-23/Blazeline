@@ -1,2 +1,4 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+Assets/Scenes/Base[[:space:]]Level[[:space:]]Scene.unity filter=lfs diff=lfs merge=lfs -text
+Assets/Scenes/Small[[:space:]]Level.unity filter=lfs diff=lfs merge=lfs -text

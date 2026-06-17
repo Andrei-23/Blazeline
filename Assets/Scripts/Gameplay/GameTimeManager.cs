@@ -31,7 +31,7 @@ public class GameTimeManager : MonoBehaviour
         Weak,
     }
     private AimMode aimMode = AimMode.None;
-    private PauseMode pauseMode = PauseMode.None;
+    private PauseMode pauseMode = PauseMode.Default;
 
     private float defaultFixedDeltaTime;
     private float gameTimeLeftSeconds;
@@ -41,6 +41,11 @@ public class GameTimeManager : MonoBehaviour
     public static event Action<int, int> OnTimerMinutesChanged;
     public static event Action<float, float> OnGameTimerUpdated;
     public static event Action<float, float> OnMenuWeakPauseTimerUpdated;
+    public static event Action OnGameTimerExpired;
+
+    private bool isGameOver = false;
+    private bool isStartMode = true;
+    public bool IsGameOver => isGameOver;
 
     private void Awake()
     {
@@ -114,14 +119,22 @@ public class GameTimeManager : MonoBehaviour
         if (gameTimeLeftSeconds <= 0f)
             return;
 
+        float previousSecondsLeft = gameTimeLeftSeconds;
         gameTimeLeftSeconds = Mathf.Max(0f, gameTimeLeftSeconds - delta);
         BroadcastGameMinuteIfChanged(forceBroadcast: false);
         OnGameTimerUpdated?.Invoke(gameTimeLeftSeconds, gameDurationMinutes * 60f);
+
+        if (previousSecondsLeft > 0f && gameTimeLeftSeconds <= 0f)
+        {
+            OnGameTimerExpired?.Invoke();
+        }
     }
 
     private void UpdateMenuWeakPauseTimer(float delta)
     {
         if (menuWeakPauseTimerDurationSeconds <= 0f)
+            return;
+        if(isStartMode)
             return;
 
         float previous = menuWeakPauseTimerCurrent;
@@ -173,6 +186,12 @@ public class GameTimeManager : MonoBehaviour
     }
     public void SetPauseMode(PauseMode mode)
     {
+        if (isGameOver && mode != PauseMode.Default)
+            return;
+
+        if(isStartMode)
+            return;
+
         if (mode != pauseMode)
         {
             if(pauseMode == PauseMode.Default && !CanSetDefaultPauseMode())
@@ -181,10 +200,14 @@ public class GameTimeManager : MonoBehaviour
             }
             pauseMode = mode;
             UpdateTimeScale();
+            BroadcastTimerUpdates();
         }
     }
     public void SetPauseEnabled(bool enabled)
     {
+        if (isGameOver)
+            return;
+
         if (enabled)
         {
             SetPauseMode(PauseMode.Default);
@@ -195,8 +218,41 @@ public class GameTimeManager : MonoBehaviour
         }
     }
 
+    public void DisableStartMode()
+    {
+        if(isStartMode){
+            isStartMode = false;
+            SetPauseMode(PauseMode.None);
+        }
+    }
+
+    public void SetGameOver()
+    {
+        if (isGameOver)
+            return;
+
+        isGameOver = true;
+        SetAimingMode(AimMode.None);
+        SetPauseMode(PauseMode.Default);
+    }
+
     public float GetTimerSecondsLeft()
     {
         return gameTimeLeftSeconds;
+    }
+
+    public float GetGameDurationSeconds()
+    {
+        return Mathf.Max(0f, gameDurationMinutes * 60f);
+    }
+
+    public float GetMenuWeakPauseTimerCurrent()
+    {
+        return menuWeakPauseTimerCurrent;
+    }
+
+    public float GetMenuWeakPauseTimerDuration()
+    {
+        return Mathf.Max(0f, menuWeakPauseTimerDurationSeconds);
     }
 }

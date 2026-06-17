@@ -98,6 +98,9 @@ public class PlayerControls : MonoBehaviour
     // Input callbacks
     private void OnMove(InputAction.CallbackContext context)
     {
+        if (GameplayManager.Instance != null && GameplayManager.Instance.IsGameOver)
+            return;
+
         if (playerMovement != null)
         {
             playerMovement.SetMoveInput(context.ReadValue<Vector2>());
@@ -106,6 +109,9 @@ public class PlayerControls : MonoBehaviour
     
     private void OnMoveCanceled(InputAction.CallbackContext context)
     {
+        if (GameplayManager.Instance != null && GameplayManager.Instance.IsGameOver)
+            return;
+
         if (playerMovement != null)
         {
             playerMovement.SetMoveInput(Vector2.zero);
@@ -130,6 +136,9 @@ public class PlayerControls : MonoBehaviour
 
     private void OnKickCanceled(InputAction.CallbackContext context)
     {
+        if (GameplayManager.Instance != null && GameplayManager.Instance.IsGameOver)
+            return;
+
         if (playerMovement != null)
         {
             playerMovement.OnReleaseKick();
@@ -146,6 +155,9 @@ public class PlayerControls : MonoBehaviour
 
     private void OnKickAimCanceled(InputAction.CallbackContext context)
     {
+        if (GameplayManager.Instance != null && GameplayManager.Instance.IsGameOver)
+            return;
+
         if (playerMovement != null)
         {
             playerMovement.SetKickAimHold(false);
@@ -162,6 +174,9 @@ public class PlayerControls : MonoBehaviour
 
     private void OnBrakeCanceled(InputAction.CallbackContext context)
     {
+        if (GameplayManager.Instance != null && GameplayManager.Instance.IsGameOver)
+            return;
+
         if (playerMovement != null)
         {
             playerMovement.SetBrakeHold(false);
@@ -178,6 +193,9 @@ public class PlayerControls : MonoBehaviour
 
     private void OnSteeringCanceled(InputAction.CallbackContext context)
     {
+        if (GameplayManager.Instance != null && GameplayManager.Instance.IsGameOver)
+            return;
+
         if (playerMovement != null)
         {
             playerMovement.SetSteeringHold(false);

@@ -37,21 +37,14 @@ public class MovementCursor : MonoBehaviour
 
     private void Update()
     {
+        if (UIMenuChanger.Instance != null && UIMenuChanger.Instance.IsMenuOpen)
+        {
+            return;
+        }
+
         UpdateDirection();
     }
 
-    private void OnEnable()
-    {
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
-    }
-
-    private void OnDisable()
-    {
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
-    }
-    
     public void UpdateDirection(){
         
         if (cursorRotationPoint == null || circularMouseLimiter == null)

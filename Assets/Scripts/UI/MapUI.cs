@@ -29,8 +29,10 @@ public class MapUI : MonoBehaviour
     [Header("Icons")]
     [SerializeField] private List<MapObjectIconBinding> iconBindings = new List<MapObjectIconBinding>();
     [SerializeField] private Sprite defaultIconSprite;
+    [SerializeField] private float playerAngleOffsetDegrees;
 
     private readonly Dictionary<string, MapIcon> activeIcons = new Dictionary<string, MapIcon>();
+    private float lastPlayerAngleDegrees;
     private readonly Dictionary<MapDataManager.MapObjectType, Sprite> iconByType =
         new Dictionary<MapDataManager.MapObjectType, Sprite>();
 
@@ -55,6 +57,7 @@ public class MapUI : MonoBehaviour
         zoom = Mathf.Clamp(zoom, minZoom, maxZoom);
         Vector2 centerWorldXY = GetCenterWorldXY();
 
+        SyncPlayerMapState();
         UpdateMapImageTransform(centerWorldXY, zoom);
         UpdateIcons(centerWorldXY, zoom);
     }
@@ -90,6 +93,25 @@ public class MapUI : MonoBehaviour
                mapViewportRect != null &&
                mapImageRect != null &&
                mapIconPrefab != null;
+    }
+
+    private void SyncPlayerMapState()
+    {
+        if (isMiniMap || mapDataManager == null || trackedWorldTarget == null)
+        {
+            return;
+        }
+
+        if (trackedWorldTarget.TryGetComponent(out PlayerMovement playerMovement))
+        {
+            Vector2 direction = playerMovement.GetVelocity();
+            if (direction.sqrMagnitude >= 0.0001f)
+            {
+                lastPlayerAngleDegrees = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg + playerAngleOffsetDegrees;
+            }
+        }
+
+        mapDataManager.SetPlayerState(trackedWorldTarget.position, lastPlayerAngleDegrees);
     }
 
     private Vector2 GetCenterWorldXY()
@@ -142,7 +164,13 @@ public class MapUI : MonoBehaviour
                 continue;
             }
 
-            if (!mapDataManager.IsVisibleAtCenter(data.WorldPosition, centerWorldXY, currentZoom))
+            if (isMiniMap && data.ObjectType == MapDataManager.MapObjectType.Player)
+            {
+                continue;
+            }
+
+            if (data.ObjectType != MapDataManager.MapObjectType.Player &&
+                !mapDataManager.IsVisibleAtCenter(data.WorldPosition, centerWorldXY, currentZoom))
             {
                 continue;
             }
@@ -165,6 +193,11 @@ public class MapUI : MonoBehaviour
 
             icon.SetAnchoredPosition(iconPosition);
             icon.SetZoom(currentZoom);
+
+            if (data is MapDataManager.PlayerMapObjectData playerData)
+            {
+                icon.SetRotation(playerData.DirectionAngleDegrees);
+            }
         }
 
         CleanupHiddenIcons(visibleIds);

@@ -35,6 +35,6 @@ public class PlayerBuffManager : MonoBehaviour
     
     public float GetSpeedBoost()
     {
-        return 1f + 0.5f * speedBonusCount + 0.5f * dangerLevelPortals;
+        return 1f + 0.2f * speedBonusCount + 0.5f * dangerLevelPortals;
     }
 }

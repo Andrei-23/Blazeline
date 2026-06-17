@@ -135,6 +135,9 @@ public class UIControls : MonoBehaviour
             return;
         }
 
+        if (GameplayManager.Instance != null && GameplayManager.Instance.IsGameOver)
+            return;
+
         uiManager.OnUIBack();
     }
 
@@ -145,6 +148,9 @@ public class UIControls : MonoBehaviour
             return;
         }
 
+        if (GameplayManager.Instance != null && GameplayManager.Instance.IsGameOver)
+            return;
+
         uiManager.OnUIPause();
     }
 
@@ -154,6 +160,9 @@ public class UIControls : MonoBehaviour
         {
             return;
         }
+
+        if (GameplayManager.Instance != null && GameplayManager.Instance.IsGameOver)
+            return;
 
         uiManager.OnUIMap();
     }

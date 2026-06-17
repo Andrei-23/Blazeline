@@ -10,7 +10,10 @@ public class MapDataManager : MonoBehaviour
         Danger,
         Portal,
         Obelisk,
+        Player,
     }
+
+    public const string PlayerIconId = "player";
 
     public abstract class MapObjectData
     {
@@ -70,6 +73,22 @@ public class MapDataManager : MonoBehaviour
             : base(id, displayName, MapObjectType.Obelisk, worldPosition, discovered)
         {
             IsActive = isActive;
+        }
+    }
+
+    public sealed class PlayerMapObjectData : MapObjectData
+    {
+        public float DirectionAngleDegrees { get; private set; }
+
+        public PlayerMapObjectData(Vector3 worldPosition, float directionAngleDegrees)
+            : base(PlayerIconId, "Player", MapObjectType.Player, worldPosition, true)
+        {
+            DirectionAngleDegrees = directionAngleDegrees;
+        }
+
+        public void SetDirectionAngle(float directionAngleDegrees)
+        {
+            DirectionAngleDegrees = directionAngleDegrees;
         }
     }
 
@@ -171,6 +190,19 @@ public class MapDataManager : MonoBehaviour
 
         mapObjectData.SetWorldPosition(worldPosition);
         return true;
+    }
+
+    public void SetPlayerState(Vector3 worldPosition, float directionAngleDegrees)
+    {
+        if (TryGetMapObjectById(PlayerIconId, out MapObjectData existing) &&
+            existing is PlayerMapObjectData playerData)
+        {
+            playerData.SetWorldPosition(worldPosition);
+            playerData.SetDirectionAngle(directionAngleDegrees);
+            return;
+        }
+
+        AddIcon(new PlayerMapObjectData(worldPosition, directionAngleDegrees));
     }
     public bool UpdateObeliskIconActive(string id, bool isActive)
     {

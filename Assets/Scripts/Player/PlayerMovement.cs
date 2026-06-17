@@ -68,6 +68,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isSteeringHeld = false;
     private bool isTimeStoppedForKickAim = false;
     private bool isBrakeHeld = false;
+    private bool isControlEnabled = true;
     
     // Kick visualization (for arrow indicator)
     // private Vector2 movementTargetDirection = Vector2.zero;
@@ -129,14 +130,41 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     public void SetMoveInput(Vector2 input)
     {
+        if (!isControlEnabled)
+        {
+            moveInput = Vector2.zero;
+            return;
+        }
+
         moveInput = input;
     }
+
+    public void SetControlEnabled(bool enabled)
+    {
+        isControlEnabled = enabled;
+        if (!isControlEnabled)
+        {
+            moveInput = Vector2.zero;
+            isKickActive = false;
+            isKickAimHeld = false;
+            isSteeringHeld = false;
+            isBrakeHeld = false;
+            kickInputBuffered = false;
+            isDashing = false;
+            UpdateKickAimTimeScale();
+        }
+    }
+
+    public bool IsControlEnabled => isControlEnabled;
     
     /// <summary>
     /// Try to perform a dash. Returns true if dash was successful.
     /// </summary>
     public bool TryDash()
     {
+        if (!isControlEnabled)
+            return false;
+
         if (!isDashing && dashCooldownTimer <= 0f)
         {
             StartDash();
@@ -147,6 +175,9 @@ public class PlayerMovement : MonoBehaviour
     
     public void SetKickActive(bool active)
     {
+        if (!isControlEnabled)
+            return;
+
         if (active == isKickActive)
             return;
         isKickActive = active;
@@ -180,17 +211,26 @@ public class PlayerMovement : MonoBehaviour
 
     public void SetKickAimHold(bool isHeld)
     {
+        if (!isControlEnabled)
+            return;
+
         isKickAimHeld = isHeld;
         UpdateKickAimTimeScale();
     }
 
     public void SetSteeringHold(bool isHeld)
     {
+        if (!isControlEnabled)
+            return;
+
         isSteeringHeld = isHeld;
     }
 
     public void SetBrakeHold(bool isHeld)
     {
+        if (!isControlEnabled)
+            return;
+
         isBrakeHeld = isHeld;
     }
     
@@ -240,6 +280,9 @@ public class PlayerMovement : MonoBehaviour
     
     private void Update()
     {
+        if (!isControlEnabled)
+            return;
+
         // Update dash cooldown timer
         if (dashCooldownTimer > 0f)
         {
@@ -257,7 +300,7 @@ public class PlayerMovement : MonoBehaviour
         }
         
         // Check if buffered kick can be executed
-        if ((isKickActive || kickInputBuffered) && attachedCollider != null)
+        if ((isKickActive || (kickInputBuffered && !isKickAimHeld)) && attachedCollider != null)
         {
             PerformKick();
             kickInputBuffered = false;
@@ -288,6 +331,13 @@ public class PlayerMovement : MonoBehaviour
     
     private void FixedUpdate()
     {
+        if (!isControlEnabled)
+        {
+            velocity = Vector2.zero;
+            rb.linearVelocity = Vector2.zero;
+            return;
+        }
+
         float deltaTime = Time.fixedDeltaTime;
         
         if (isDashing)
@@ -311,6 +361,7 @@ public class PlayerMovement : MonoBehaviour
                 // else if (isSteeringHeld && moveDirection.magnitude > 0.1f)
                 else if (isSteeringHeld)
                 {
+                    GameTimeManager.Instance.DisableStartMode();
                     velocity = CalculateSkateboardSteeringNewVelocity(moveDirection, deltaTime);
                 }
                 else
@@ -341,6 +392,11 @@ public class PlayerMovement : MonoBehaviour
         // We calculate velocity manually, then apply it so collisions work properly
         currentSpeed = velocity.magnitude;
         rb.linearVelocity = velocity;
+
+        if(velocity.magnitude > 0.001f)
+        {
+            GameTimeManager.Instance.DisableStartMode();
+        }
     }
     
     /// <summary>

@@ -12,6 +12,8 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public bool IsMenuOpen => menuChanger != null && menuChanger.IsMenuOpen;
+
     public void OnUIBack()
     {
         menuChanger?.OnUIBack();

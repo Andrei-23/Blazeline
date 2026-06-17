@@ -52,6 +52,7 @@ public class ObjectiveManager  : MonoBehaviour
 
     private void Start()
     {
+        Debug.Log("Start objective init");
         SpawnInitialization();
     }
 
@@ -245,6 +246,26 @@ public class ObjectiveManager  : MonoBehaviour
         return result;
     }
 
+    public bool CanWin(){
+        foreach(Portal portal in generatedPortals)
+        {
+            if(portal != null && !portal.isClosed)
+            {
+                return false;
+            }
+        }
+        
+        int closedObeliskCount = 0;
+        foreach(Obelisk obelisk in generatedObelisks)
+        {
+            if(obelisk != null && obelisk.isClosed)
+            {
+                closedObeliskCount++;
+            }
+        }
+        return closedObeliskCount * 2 >= generatedObelisks.Count;
+    }
+    
     private void OnTimerMinutesChanged(int cur, int _)
     {
         if(cur == 0) return; // it is done independently

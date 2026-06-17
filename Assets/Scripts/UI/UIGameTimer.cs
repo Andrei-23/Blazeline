@@ -13,6 +13,7 @@ public class UIGameTimer : MonoBehaviour
     {
         GameTimeManager.OnGameTimerUpdated += HandleGameTimerUpdated;
         GameTimeManager.OnMenuWeakPauseTimerUpdated += HandleMenuWeakPauseTimerUpdated;
+        RefreshFromManager();
     }
 
     private void OnDisable()
@@ -34,6 +35,22 @@ public class UIGameTimer : MonoBehaviour
         if (isWeakTimer)
         {
             UpdateTime(currentSeconds, maxSeconds);
+        }
+    }
+
+    private void RefreshFromManager()
+    {
+        GameTimeManager manager = GameTimeManager.Instance;
+        if (manager == null)
+            return;
+
+        if (isWeakTimer)
+        {
+            UpdateTime(manager.GetMenuWeakPauseTimerCurrent(), manager.GetMenuWeakPauseTimerDuration());
+        }
+        else
+        {
+            UpdateTime(manager.GetTimerSecondsLeft(), manager.GetGameDurationSeconds());
         }
     }
 

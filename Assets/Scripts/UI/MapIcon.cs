@@ -66,4 +66,14 @@ public class MapIcon : MonoBehaviour
         iconRectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, scaledSize);
         iconRectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, scaledSize);
     }
+
+    public void SetRotation(float angleDegrees)
+    {
+        if (iconRectTransform == null)
+        {
+            return;
+        }
+
+        iconRectTransform.localRotation = Quaternion.Euler(0f, 0f, angleDegrees);
+    }
 }

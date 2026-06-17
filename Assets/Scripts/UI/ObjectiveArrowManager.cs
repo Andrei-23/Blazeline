@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class ObjectiveArrowManager : MonoBehaviour
 {
+    [SerializeField] private Vector2Int ScreenTextureSizePixels;
     [Header("References")]
     [SerializeField] private Camera targetCamera;
     [SerializeField] private RectTransform canvasRect;
@@ -112,11 +113,12 @@ public class ObjectiveArrowManager : MonoBehaviour
         // }
 
         Vector2 screenCenter = new(
-            Screen.width * 0.5f,
-            Screen.height * 0.5f
+            ScreenTextureSizePixels.x * 0.5f,
+            ScreenTextureSizePixels.y * 0.5f
         );
 
         Vector2 direction = ((Vector2)screenPos - screenCenter).normalized;
+        // Vector2 direction = screenPos.normalized;
 
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         arrow.SetRotation(angle);

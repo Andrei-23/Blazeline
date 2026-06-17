@@ -16,6 +16,10 @@ PrefabInstance:
       propertyPath: rotate
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1390717776647866595, guid: b99b25c07a0f3a84baa38dd6c5a1fe3b, type: 3}
+      propertyPath: weight
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 1948729470676035246, guid: b99b25c07a0f3a84baa38dd6c5a1fe3b, type: 3}
       propertyPath: m_CompositePaths.m_Paths.Array.size
       value: 2

@@ -18,4 +18,13 @@ public class Portal : Objective
         float secondsPased = spawnTime - GameTimeManager.Instance.GetTimerSecondsLeft();
         return Mathf.InverseLerp(0f, 1f, secondsPased / 60f / timerMinute);
     }
+
+    public bool IsTimerExpired()
+    {
+        if (GameTimeManager.Instance == null)
+            return false;
+
+        float secondsPassed = spawnTime - GameTimeManager.Instance.GetTimerSecondsLeft();
+        return secondsPassed >= timerMinute * 60f;
+    }
 }

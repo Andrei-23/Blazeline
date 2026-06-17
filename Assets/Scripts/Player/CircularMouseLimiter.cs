@@ -42,6 +42,11 @@ public class CircularMouseLimiter : MonoBehaviour
 
     private void Update()
     {
+        if (UIMenuChanger.Instance != null && UIMenuChanger.Instance.IsMenuOpen)
+        {
+            return;
+        }
+
         if (Mouse.current == null)
         {
             return;
@@ -155,16 +160,12 @@ public class CircularMouseLimiter : MonoBehaviour
     {
         PlayerMovement.AttachStarted += OnAttachStarted;
         PlayerMovement.AttachInfoUpdated += OnAttachInfoUpdated;
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void OnDisable()
     {
         PlayerMovement.AttachStarted -= OnAttachStarted;
         PlayerMovement.AttachInfoUpdated -= OnAttachInfoUpdated;
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
     }
 }
 

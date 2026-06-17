@@ -49,6 +49,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Obelisk
   objectiveType: 1
+  isClosed: 0
+  isEnabled: 1
   id: 0
   disabledObject: {fileID: 6811063380847915598}
   defaultObject: {fileID: 8393706698026278280}
@@ -362,7 +364,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 4a697e6de60d0e641b31016883ce0375, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 20791fd64f100cf408969123585b6c05, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

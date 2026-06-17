@@ -8,6 +8,7 @@ public class GenerationController : MonoBehaviour
 {
     public static GenerationController Instance { get; private set; }
 
+    [SerializeField] public bool generateOnStart;
     [SerializeField] public List<BaseGenerator> generators;
 
     [Header("Level Area")]
@@ -68,13 +69,13 @@ public class GenerationController : MonoBehaviour
             Instance = null;
     }
 
-    void Update()
+    void Start()
     {
-        // if (!Application.isPlaying && autoGenerate)
-        // {
-        //     autoGenerate = false;
-        //     GenerateAll();
-        // }
+        if (generateOnStart && Application.isPlaying)
+        {
+            GenerateAll();
+        }
+
     }
 
     [ContextMenu("Generate All")]

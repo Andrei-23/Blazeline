@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using UnityEditor.Tilemaps;
-using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine;
 
 [ExecuteInEditMode]
 public class TileRotation : MonoBehaviour
